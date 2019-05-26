@@ -21,7 +21,7 @@ endif
 let g:did_cmdline = 1
 
 " Set option
-if has("nvim")
+if has("nvim") || has("win32")
     let g:cmdline_in_buffer = get(g:, 'cmdline_in_buffer', 1)
 else
     let g:cmdline_in_buffer = 0
@@ -185,6 +185,44 @@ function VimCmdLineStart_Nvim(app)
     stopinsert
 endfunction
 
+" Run the interpreter in a Vim terminal buffer
+function VimCmdLineStart_Vim(app)
+    let edbuf = bufname("%")
+    let thisft = b:cmdline_filetype
+    if g:cmdline_job[b:cmdline_filetype]
+        return
+    endif
+    set switchbuf=useopen
+    if g:cmdline_vsplit
+        if g:cmdline_term_width > 16 && g:cmdline_term_width < (winwidth(0) - 16)
+            silent exe "belowright " . g:cmdline_term_width . "vnew"
+        else
+            silent belowright vnew
+        endif
+    else
+        if g:cmdline_term_height > 6 && g:cmdline_term_height < (winheight(0) - 6)
+            silent exe "belowright " . g:cmdline_term_height . "new"
+        else
+            silent belowright new
+        endif
+    endif
+   let g:term_bufn = term_start(a:app,
+                        \ {'exit_cb': function('s:VimCmdLineJobExit'), "curwin": 1, "term_finish": "close"})
+
+    let g:cmdline_job[thisft] = term_getjob(g:term_bufn)
+
+    let g:cmdline_termbuf[thisft] = bufname("%")
+    if g:cmdline_esc_term
+        tnoremap <buffer> <Esc> <C-\><C-n>
+    endif
+    if g:cmdline_outhl
+        exe 'runtime syntax/cmdlineoutput_' . a:app . '.vim'
+    endif
+    normal! G
+    exe "sbuffer " . edbuf
+    stopinsert
+endfunction
+
 function VimCmdLineCreateMaps()
     exe 'nmap <silent><buffer> ' . g:cmdline_map_send . ' :call VimCmdLineSendLine()<CR>'
     exe 'nmap <silent><buffer> ' . g:cmdline_map_send_and_stay . ' :call VimCmdLineSendLineAndStay()<CR>'
@@ -212,15 +250,21 @@ function VimCmdLineStartApp()
 
     call VimCmdLineCreateMaps()
 
-    if !isdirectory(g:cmdline_tmp_dir)
-        call mkdir(g:cmdline_tmp_dir)
+    if !has("win32")
+        if !isdirectory(g:cmdline_tmp_dir)
+            call mkdir(g:cmdline_tmp_dir)
+        endif
     endif
 
     if exists("g:cmdline_external_term_cmd")
         call VimCmdLineStart_ExTerm(b:cmdline_app)
     else
         if g:cmdline_in_buffer
-            call VimCmdLineStart_Nvim(b:cmdline_app)
+             if  has("win32")
+                call VimCmdLineStart_Vim(b:cmdline_app)
+             else
+                call VimCmdLineStart_Nvim(b:cmdline_app)
+             endif
         else
             call VimCmdLineStart_Tmux(b:cmdline_app)
         endif
