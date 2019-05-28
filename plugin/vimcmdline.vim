@@ -287,7 +287,11 @@ function VimCmdLineSendCmd(...)
         if exists('*chansend')
             call chansend(g:cmdline_job[b:cmdline_filetype], a:1 . b:cmdline_nl)
         else
-            call jobsend(g:cmdline_job[b:cmdline_filetype], a:1 . b:cmdline_nl)
+            if !has("nvim") && has("win32") 
+                call term_sendkeys(g:term_bufn, a:1 . b:cmdline_nl)
+            else    
+                call jobsend(g:cmdline_job[b:cmdline_filetype], a:1 . b:cmdline_nl)
+            endif    
         endif
     else
         let str = substitute(a:1, "'", "'\\\\''", "g")
