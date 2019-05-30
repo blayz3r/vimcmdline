@@ -449,7 +449,7 @@ function VimCmdLineSetApp(ftype)
             endif
         endfor
     endif
-    if type(g:cmdline_job_vim[b:cmdline_filetype]) != type(0) || g:cmdline_job_nvim[b:cmdline_filetype] || g:cmdline_tmuxsname[b:cmdline_filetype] != "" || s:cmdline_app_pane != ''
+    if has("win32") || g:cmdline_job_nvim[b:cmdline_filetype] || g:cmdline_tmuxsname[b:cmdline_filetype] != "" || s:cmdline_app_pane != ''
         call VimCmdLineCreateMaps()
     endif
 endfunction
