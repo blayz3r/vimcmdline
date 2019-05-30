@@ -37,13 +37,15 @@ let g:cmdline_outhl = get(g:, 'cmdline_outhl', 1)
 let g:cmdline_auto_scroll = get(g:, 'cmdline_auto_scroll', 1)
 
 " Internal variables
-let g:cmdline_job = {}
+let g:cmdline_job_nvim = {}
+let g:cmdline_job_vim = {}
 let g:cmdline_termbuf = {}
 let g:cmdline_tmuxsname = {}
 let s:ftlist = split(glob(expand('<sfile>:h:h') . '/ftplugin/*'))
 call map(s:ftlist, "substitute(v:val, '.*/\\(.*\\)_.*', '\\1', '')")
 for s:ft in s:ftlist
-    let g:cmdline_job[s:ft] = 0
+    let g:cmdline_job_nvim[s:ft] = 0
+    let g:cmdline_job_vim[s:ft] = 0
     let g:cmdline_termbuf[s:ft] = ''
     let g:cmdline_tmuxsname[s:ft] = ''
 endfor
@@ -155,7 +157,7 @@ endfunction
 function VimCmdLineStart_Nvim(app)
     let edbuf = bufname("%")
     let thisft = b:cmdline_filetype
-    if g:cmdline_job[b:cmdline_filetype]
+    if g:cmdline_job_nvim[b:cmdline_filetype]
         return
     endif
     set switchbuf=useopen
@@ -172,7 +174,7 @@ function VimCmdLineStart_Nvim(app)
             silent belowright new
         endif
     endif
-    let g:cmdline_job[thisft] = termopen(a:app, {'on_exit': function('s:VimCmdLineJobExit')})
+    let g:cmdline_job_nvim[thisft] = termopen(a:app, {'on_exit': function('s:VimCmdLineJobExit')})
     let g:cmdline_termbuf[thisft] = bufname("%")
     if g:cmdline_esc_term
         tnoremap <buffer> <Esc> <C-\><C-n>
@@ -189,7 +191,7 @@ endfunction
 function VimCmdLineStart_Vim(app)
     let edbuf = bufname("%")
     let thisft = b:cmdline_filetype
-    if g:cmdline_job[b:cmdline_filetype]
+    if type(g:cmdline_job_vim[b:cmdline_filetype]) != type(0) 
         return
     endif
     set switchbuf=useopen
@@ -209,7 +211,7 @@ function VimCmdLineStart_Vim(app)
    let g:term_bufn = term_start(a:app,
                         \ {'exit_cb': function('s:VimCmdLineJobExit'), "curwin": 1, "term_finish": "close"})
 
-    let g:cmdline_job[thisft] = term_getjob(g:term_bufn)
+    let g:cmdline_job_vim[thisft] = term_getjob(g:term_bufn)
 
     let g:cmdline_termbuf[thisft] = bufname("%")
     if g:cmdline_esc_term
@@ -273,7 +275,7 @@ endfunction
 
 " Send a single line to the interpreter
 function VimCmdLineSendCmd(...)
-    if g:cmdline_job[b:cmdline_filetype]
+    if g:cmdline_job_nvim[b:cmdline_filetype]
         if g:cmdline_auto_scroll && (!exists('b:cmdline_quit_cmd') || a:1 != b:cmdline_quit_cmd)
             let isnormal = mode() ==# 'n'
             let curwin = winnr()
@@ -285,14 +287,12 @@ function VimCmdLineSendCmd(...)
             endif
         endif
         if exists('*chansend')
-            call chansend(g:cmdline_job[b:cmdline_filetype], a:1 . b:cmdline_nl)
+            call chansend(g:cmdline_job_nvim[b:cmdline_filetype], a:1 . b:cmdline_nl)
         else
-            if !has("nvim") && has("win32") 
-                call term_sendkeys(g:term_bufn, a:1 . b:cmdline_nl)
-            else    
-                call jobsend(g:cmdline_job[b:cmdline_filetype], a:1 . b:cmdline_nl)
-            endif    
+            call jobsend(g:cmdline_job_nvim[b:cmdline_filetype], a:1 . b:cmdline_nl)
         endif
+    elseif type(g:cmdline_job_vim[b:cmdline_filetype]) != type(0) 
+        call term_sendkeys(g:term_bufn, a:1 . b:cmdline_nl)
     else
         let str = substitute(a:1, "'", "'\\\\''", "g")
         if str =~ '^-'
