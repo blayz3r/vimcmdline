@@ -424,9 +424,17 @@ function VimCmdLineQuit(ftype)
 endfunction
 
 " Register that the job no longer exists
-function s:VimCmdLineJobExit(job_id, data, etype)
+function s:VimCmdLineJobExit(job_id, stts)
     for ftype in keys(g:cmdline_job)
-        if a:job_id == g:cmdline_job[ftype]
+        if type(a:job_id) != type(0)
+            let g:cmdline_job[ftype] = "no"
+        endif
+    endfor
+endfunction
+
+function s:NvimCmdLineJobExit(job_id, data, etype)
+    for ftype in keys(g:cmdline_job)
+        if g:cmdline_job[ftype] == a:job_id
             let g:cmdline_job[ftype] = 0
         endif
     endfor
@@ -441,7 +449,7 @@ function VimCmdLineSetApp(ftype)
             endif
         endfor
     endif
-    if g:cmdline_job[b:cmdline_filetype] || g:cmdline_tmuxsname[b:cmdline_filetype] != "" || s:cmdline_app_pane != ''
+    if type(g:cmdline_job_vim[b:cmdline_filetype]) != type(0)|| g:cmdline_job_nvim[b:cmdline_filetype] || g:cmdline_tmuxsname[b:cmdline_filetype] != "" || s:cmdline_app_pane != ''
         call VimCmdLineCreateMaps()
     endif
 endfunction
