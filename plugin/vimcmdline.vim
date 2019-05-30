@@ -275,7 +275,9 @@ endfunction
 
 " Send a single line to the interpreter
 function VimCmdLineSendCmd(...)
-    if g:cmdline_job_nvim[b:cmdline_filetype]
+    if type(g:cmdline_job_vim[b:cmdline_filetype]) != type(0) 
+        call term_sendkeys(g:term_bufn, a:1 . b:cmdline_nl)
+    elseif  g:cmdline_job_nvim[b:cmdline_filetype]
         if g:cmdline_auto_scroll && (!exists('b:cmdline_quit_cmd') || a:1 != b:cmdline_quit_cmd)
             let isnormal = mode() ==# 'n'
             let curwin = winnr()
@@ -291,8 +293,6 @@ function VimCmdLineSendCmd(...)
         else
             call jobsend(g:cmdline_job_nvim[b:cmdline_filetype], a:1 . b:cmdline_nl)
         endif
-    elseif type(g:cmdline_job_vim[b:cmdline_filetype]) != type(0) 
-        call term_sendkeys(g:term_bufn, a:1 . b:cmdline_nl)
     else
         let str = substitute(a:1, "'", "'\\\\''", "g")
         if str =~ '^-'
