@@ -425,17 +425,17 @@ endfunction
 
 " Register that the job no longer exists
 function s:VimCmdLineJobExit(job_id, stts)
-    for ftype in keys(g:cmdline_job)
+    for ftype in keys(g:cmdline_job_vim)
         if type(a:job_id) != type(0)
-            let g:cmdline_job[ftype] = "no"
+            let g:cmdline_job_vim[ftype] = "no"
         endif
     endfor
 endfunction
 
 function s:NvimCmdLineJobExit(job_id, data, etype)
-    for ftype in keys(g:cmdline_job)
-        if g:cmdline_job[ftype] == a:job_id
-            let g:cmdline_job[ftype] = 0
+    for ftype in keys(g:cmdline_job_nvim)
+        if g:cmdline_job_nvim[ftype] == a:job_id
+            let g:cmdline_job_nvim[ftype] = 0
         endif
     endfor
 endfunction
