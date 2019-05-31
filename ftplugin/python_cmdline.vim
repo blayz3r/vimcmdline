@@ -4,7 +4,7 @@ if match(&ft, '\v<sage>') != -1
 endif
 
 " Ensure that plugin/vimcmdline.vim was sourced
-if !exists("g:cmdline_job")
+if !exists("g:cmdline_job_nvim")||!exists("g:cmdline_job_vim")
     runtime plugin/vimcmdline.vim
 endif
 
