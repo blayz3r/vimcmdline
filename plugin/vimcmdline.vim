@@ -426,7 +426,9 @@ function VimCmdLineQuit(ftype)
             startinsert
             let g:cmdline_termbuf[a:ftype] = ""
         endif
-        let g:cmdline_tmuxsname[a:ftype] = ""
+        if !has("win32")
+            let g:cmdline_tmuxsname[a:ftype] = ""
+        endif
         let s:cmdline_app_pane = ''
     else
         echomsg 'Quit command not defined for file of type "' . a:ftype . '".'
