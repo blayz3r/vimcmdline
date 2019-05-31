@@ -201,7 +201,7 @@ endfunction
 function VimCmdLineStart_Vim(app)
     let edbuf = bufname("%")
     let thisft = b:cmdline_filetype
-    if g:cmdline_job_vim[b:cmdline_filetype] == "no" 
+    if g:cmdline_job_vim[b:cmdline_filetype] != "no" 
         return
     endif
     set switchbuf=useopen
