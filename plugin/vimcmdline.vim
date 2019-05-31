@@ -42,7 +42,13 @@ let g:cmdline_job_vim = {}
 let g:cmdline_termbuf = {}
 let g:cmdline_tmuxsname = {}
 let s:ftlist = split(glob(expand('<sfile>:h:h') . '/ftplugin/*'))
-call map(s:ftlist, "substitute(v:val, '.*/\\(.*\\)_.*', '\\1', '')")
+
+if !has("win32")
+    call map(s:ftlist, "substitute(v:val, '.*/\\(.*\\)_.*', '\\1', '')")
+else
+    call map(s:ftlist, "substitute(v:val, '.*\\\(.*\\)_.*', '\\1', '')")
+endif
+
 for s:ft in s:ftlist
     let g:cmdline_job_nvim[s:ft] = 0
     let g:cmdline_job_vim[s:ft] = 0
