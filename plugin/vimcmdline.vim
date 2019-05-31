@@ -44,9 +44,9 @@ let g:cmdline_tmuxsname = {}
 let s:ftlist = split(glob(expand('<sfile>:h:h') . '/ftplugin/*'))
 
 if !has("win32")
-    call map(s:ftlist, "substitute(v:val, '.*/\\(.*\\)_.*', '\\1', '')")
-else
     call map(s:ftlist, "substitute(v:val, '.*\\\(.*\\)_.*', '\\1', '')")
+else
+    call map(s:ftlist, "substitute(v:val, '.*/\\(.*\\)_.*', '\\1', '')")
 endif
 
 for s:ft in s:ftlist
