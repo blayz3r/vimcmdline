@@ -53,6 +53,7 @@ else
 endif
 
 for s:ft in s:ftlist
+    let g:cmdline_job_vim[s:ft] = 0
     let g:cmdline_job_nvim[s:ft] = 0
     let g:cmdline_termbuf[s:ft] = ''
     let g:cmdline_tmuxsname[s:ft] = ''
