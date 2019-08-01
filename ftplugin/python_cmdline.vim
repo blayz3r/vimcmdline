@@ -11,11 +11,11 @@ endif
 if exists("g:cmdline_app")
     for key in keys(g:cmdline_app)
         if key == "python"
-	    if match(g:cmdline_app["python"], "ipython") != -1
-	        let b:cmdline_ipython = 1
-	    elseif match(g:cmdline_app["python"], "jupyter") != -1
-	        let b:cmdline_jupyter = 1
-	    endif
+            if match(g:cmdline_app["python"], "ipython") != -1
+                let b:cmdline_ipython = 1
+            elseif match(g:cmdline_app["python"], "jupyter") != -1
+                let b:cmdline_jupyter = 1
+            endif
         endif
     endfor
 endif
@@ -39,7 +39,11 @@ endpython
         call VimCmdLineSendCmd("\e[201~")
 	call VimCmdLineSendCmd(b:cmdline_nl)
     else
-        call VimCmdLineSendCmd(join(add(a:lines, ''), b:cmdline_nl))
+        if a:lines[len(a:lines)-1] == ''
+            call VimCmdLineSendCmd(join(a:lines, b:cmdline_nl))
+        else
+            call VimCmdLineSendCmd(join(add(a:lines, ''), b:cmdline_nl))
+        endif
     endif
 endfunction
 
