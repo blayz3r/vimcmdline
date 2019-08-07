@@ -370,16 +370,16 @@ function VimCmdLineSendParagraph()
     let j = i
     let gotempty = 0
     while j < max
-        let j += 1
-        let line = getline(j)
+        let line = getline(j+1)
         if line =~ '^\s*$'
             break
         endif
+         let j += 1
     endwhile
     let lines = getline(i, j)
     call b:cmdline_source_fun(lines)
     if j < max
-        call cursor(j, 1)
+        call cursor(j+1, 1)
     else
         call cursor(max, 1)
     endif

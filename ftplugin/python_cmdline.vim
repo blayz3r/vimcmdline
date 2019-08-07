@@ -39,7 +39,7 @@ endpython
         call VimCmdLineSendCmd("\e[201~")
 	call VimCmdLineSendCmd(b:cmdline_nl)
     else
-            call VimCmdLineSendCmd(join(a:lines, b:cmdline_nl))
+         call VimCmdLineSendCmd(join(a:lines, b:cmdline_nl))
     endif
 endfunction
 
