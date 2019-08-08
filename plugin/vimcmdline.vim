@@ -391,10 +391,10 @@ function SendMotionToRPL(type)
     let lstart = line("'[")
     let lend = line("']")
     if lstart == lend
-        call VimCmdLineSendCmd(lstart)
+        call b:cmdline_source_fun(lstart)
     else
         let lines = getline(lstart, lend)
-        call VimCmdLineSendCmd(lines)
+        call b:cmdline_source_fun(lines)
     endif
 endfunction
 
