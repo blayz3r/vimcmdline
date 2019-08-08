@@ -387,7 +387,7 @@ function VimCmdLineSendParagraph()
 endfunction
 
 " Send motion to REPL
-function SendMotionToRPL()
+function SendMotionToRPL(type)
     let lstart = line("'[")
     let lend = line("']")
     if lstart == lend
