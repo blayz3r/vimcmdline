@@ -375,12 +375,21 @@ function VimCmdLineSendParagraph()
         if line =~ '^\s*$'
             break
         endif
-         let j += 1
+        let j += 1
     endwhile
     let lines = getline(i, j)
     call b:cmdline_source_fun(lines)
+
+    let k = j + 1
+    let curline = substitute(getline(k), '^\s*', "", "")
+    let fc = curline[0]
     if j < max
-        call cursor(j+1, 1)
+        while strlen(curline) == 0
+            call cursor(k, 1)
+            let curline = substitute(getline("."), '^\s*', "", "")
+            let fc = curline[0]
+            let k += 1
+        endwhile
     else
         call cursor(max, 1)
     endif
