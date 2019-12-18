@@ -45,7 +45,7 @@ endfunction
 
 function! PythonSendLine()
     let line = getline(".")
-    if line =~ '^class ' || line =~ '^def '
+    if line =~ '^class ' || line =~ '^def ' || line =~ '^if ' || line =~ '^else '
         let lines = []
         let idx = line('.')
         while idx <= line('$')
