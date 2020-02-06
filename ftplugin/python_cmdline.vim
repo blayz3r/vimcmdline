@@ -59,7 +59,7 @@ function! PythonSendLine()
     call VimCmdLineDown()
 endfunction
 
-if has("win32")
+if has("win32") && g:cmdline_app["python"]=='python'
     let b:cmdline_nl = "\r\n"
 else
     let b:cmdline_nl = "\n"
