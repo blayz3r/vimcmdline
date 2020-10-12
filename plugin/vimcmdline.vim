@@ -236,8 +236,8 @@ endfunction
 
 function VimCmdLineCreateMaps()
     exe 'nmap <silent><buffer> ' . g:cmdline_map_send . ' :call VimCmdLineSendLine()<CR>'
+    exe 'nmap <silent><buffer> ' . g:cmdline_map_send_and_stay . ' :call VimCmdLineSendLineAndStay()<CR>'
     exe 'nmap <silent><buffer> ' . g:cmdline_map_send_motion . ' :set opfunc=VimCmdLineSendMotion<CR>g@'
-    exe 'nmap <silent><buffer> ' . g:cmdline_map_send_motion . ' :set opfunc=SendMotionToRPL<CR>g@'
     exe 'vmap <silent><buffer> ' . g:cmdline_map_send .
                 \ ' <Esc>:call VimCmdLineSendSelection()<CR>'
     if exists("b:cmdline_source_fun")
@@ -511,7 +511,7 @@ if !exists("g:cmdline_map_send_and_stay")
     let g:cmdline_map_send_and_stay = "<LocalLeader><Space>"
 endif
 if !exists("g:cmdline_map_send_motion")
-    let g:cmdline_map_send_and_stay = "<LocalLeader>m"
+    let g:cmdline_map_send_motion = "<LocalLeader>m"
 endif
 if !exists("g:cmdline_map_source_fun")
     let g:cmdline_map_source_fun = "<LocalLeader>f"
